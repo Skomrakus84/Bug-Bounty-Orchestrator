@@ -106,18 +106,44 @@ class ScannerEngine:
 
     async def run_httpx(self, subdomains: list) -> list:
         input_data = "\n".join([s.get("host", "") for s in subdomains])
-        cmd = "httpx -s"
+        cmd = "httpx -json"
         output = await self.run_command(cmd, input_data=input_data)
-        urls = [line.strip() for line in output.splitlines() if line.strip()]
-        return [{"url": url} for url in urls]
+        urls = []
+        for line in output.splitlines():
+            if line.strip():
+                try:
+                    data = json.loads(line)
+                    urls.append({"url": data.get("url", "")})
+                except json.JSONDecodeError:
+                    pass
+        return urls
 
     async def run_nmap(self, live_urls: list) -> list:
+        import xml.etree.ElementTree as ET
         results = []
         for url in live_urls:
             host = url.get("url", "").replace("http://", "").replace("https://", "").split("/")[0]
             cmd = f"nmap -Pn {host} -oX -"
             output = await self.run_command(cmd)
-            results.append(output)
+            try:
+                root = ET.fromstring(output)
+                for host_elem in root.findall("host"):
+                    address = host_elem.find("address")
+                    if address is not None:
+                        host_ip = address.get("addr", "")
+                        ports = []
+                        ports_elem = host_elem.find("ports")
+                        if ports_elem is not None:
+                            for port_elem in ports_elem.findall("port"):
+                                port_id = port_elem.get("portid", "")
+                                state = port_elem.find("state")
+                                if state is not None and state.get("state") == "open":
+                                    service = port_elem.find("service")
+                                    service_name = service.get("name", "unknown") if service is not None else "unknown"
+                                    ports.append({"port": port_id, "service": service_name})
+                        results.append({"host": host, "ip": host_ip, "ports": ports})
+            except ET.ParseError:
+                print(f"Failed to parse nmap XML for {host}")
         return results
 
     async def run_nuclei(self, live_urls: list) -> list:
