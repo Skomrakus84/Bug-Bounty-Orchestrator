@@ -1,0 +1,25 @@
+version: '3.8'
+
+# Production overrides for docker-compose.yml
+# To run: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+
+services:
+  backend:
+    volumes:
+      # In production, the code is baked into the image, so we remove the live-reload volume.
+      # The docker socket is still needed to orchestrate scans.
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: /app/start.sh # Use the production start script
+    restart: always
+
+  frontend:
+    ports:
+      - "80:80" # Map to standard HTTP port 80 in production
+    restart: always
+  
+  db:
+    ports:
+      # Do not expose the database port to the host machine in production for security.
+      # The backend service connects to it over the internal Docker network.
+      - "127.0.0.1:5432:5432" # Keep for external debugging if needed, but bind to localhost
+    restart: always

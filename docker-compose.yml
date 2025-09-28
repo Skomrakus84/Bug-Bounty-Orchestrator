@@ -1,0 +1,55 @@
+
+services:
+  db:
+    image: postgres:15
+    container_name: bug_bounty_db
+    environment:
+      - POSTGRES_DB=bug_bounty_db
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bugbounty
+
+  backend:
+    build: ./backend
+    container_name: bug_bounty_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - SHODAN_API_KEY=${SHODAN_API_KEY}
+      - URLSCAN_API_KEY=${URLSCAN_API_KEY}
+      - VIRUSTOTAL_API_KEY=${VIRUSTOTAL_API_KEY}
+      - BUGCROWD_API_KEY=${BUGCROWD_API_KEY}
+      - JIRA_SERVER=${JIRA_SERVER}
+      - JIRA_USER=${JIRA_USER}
+      - JIRA_PASSWORD=${JIRA_PASSWORD}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - bugbounty
+
+  frontend:
+    build: ./frontend
+    container_name: bug_bounty_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - bugbounty
+
+volumes:
+  postgres_data:
+
+networks:
+  bugbounty:
+    driver: bridge

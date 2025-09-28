@@ -1,0 +1,22 @@
+fastapi>=0.110.0
+uvicorn>=0.29.0
+sqlalchemy>=2.0.0
+pydantic>=2.6.0
+requests>=2.31.0
+alembic>=1.13.0
+psycopg2-binary>=2.9.0
+typer>=0.9.0
+pytest>=8.0.0
+python-dotenv>=1.0.0
+alembic
+jira>=3.5.0
+PyGithub>=1.58.0
+pandoc>=2.3
+# sublist3r>=1.1
+python-whois>=0.8.0
+dnspython>=2.4.0
+mitmproxy>=10.0.0
+schemathesis>=3.25.0
+# playwright>=1.40.0
+# selenium>=4.15.0
+# appium-python-client>=3.0.0

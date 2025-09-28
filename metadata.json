@@ -1,0 +1,5 @@
+{
+  "name": "Bug Bounty Orchestrator",
+  "description": "A personal dashboard to automate and manage web vulnerability scanning workflows. This UI provides a way to start scans, monitor their progress, and review discovered assets and vulnerabilities.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bug Bounty Orchestrator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'brand-bg': '#1a202c',
+              'brand-surface': '#2d3748',
+              'brand-primary': '#4299e1',
+              'brand-secondary': '#a0aec0',
+              'brand-text': '#e2e8f0',
+              'severity-critical': '#e53e3e',
+              'severity-high': '#dd6b20',
+              'severity-medium': '#d69e2e',
+              'severity-low': '#38a169',
+              'severity-info': '#3182ce',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1"
+  }
+}
+</script>
+<script type="module" src="/index.tsx"></script>
+</head>
+  <body class="bg-brand-bg text-brand-text">
+    <div id="root"></div>
+  </body>
+</html>
